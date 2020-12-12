@@ -38,7 +38,7 @@ userRouter.post('/login',passport.authenticate('local',{session:false}),(req,res
     const {_id,email} =req.user;
     const token=signToken(_id);
     res.cookie('access_token',token,{httpOnly:true,sameSite:true});
-    res.status(200).json({isAuthenticated:true,user:{email}});
+    res.status(200).json({isAuthenticated:true,user:req.user});
 
   }
 });
@@ -66,16 +66,16 @@ post.save(e=>{
 });
 userRouter.get('/authenticated',passport.authenticate('jwt',{session : false}),(req,res)=>{
     const {email} = req.user;
-    res.status(200).json({isAuthenticated : true, user : {email}});
+    res.status(200).json({isAuthenticated : true, user :req.user});
 });
 
 userRouter.get('/posts',passport.authenticate('jwt',{session:false}),(req,res)=>{
 
-User.findById({_id:req.user._id}).populate('posts').exec((e,d)=>{
-
+// User.findById({_id:req.user._id}).populate('posts').exec((e,d)=>{
+Post.find({},function(e,d){
     if(e) res.status(500).json({msg:'Error'});
     else {
-      res.status(200).json({posts:d.posts,isAuthenticated:true});
+      res.status(200).json({posts:d,isAuthenticated:true});
     }
 });
 });

@@ -5,15 +5,17 @@ import {AuthContext} from '../Context/AuthContext';
 import PostService from '../Services/PostService';
 
 const Post=props=>{
-  const [post,setPost]=useState({status:""});
+
+    const authContext=useContext(AuthContext);
+  const {user}=useContext(AuthContext);
+  const [post,setPost]=useState({status:"",firstName:user.firstName,lastName:user.lastName});
   const [posts,setPosts]=useState([]);
   const [loading,setloading]=useState(true);
   const [message,setMessage]=useState(null);
-  const authContext=useContext(AuthContext);
 
   useEffect(()=>{
     PostService.getPosts().then(data=>{
-      setPosts(data.posts);
+      setPosts(data.posts.reverse());
     });
 setloading(false);
   },[]);
@@ -26,7 +28,7 @@ setloading(false);
      if(message!="UnAuthorized"){
 
        PostService.getPosts().then(getData=>{
-         setPosts(getData.posts);
+         setPosts(getData.posts.reverse());
          setMessage("Successfully Created.");
 
        });
@@ -43,7 +45,8 @@ setloading(false);
  }
 
 const onChange=e=>{
-  setPost({status:e.target.value});
+
+  setPost({status:e.target.value,firstName:user.firstName,lastName:user.lastName});
 }
 
 const resetForm=()=>{
@@ -54,14 +57,8 @@ const resetForm=()=>{
 
   return(
     <div className='container'>
-     <h3>Your Posts</h3>
-    <ul className='li-group'>
-    { loading ? <h4>Loading....</h4> :posts.map(p=>{
-        return <PostItem key={p._id} status={p.status}/>
-      })}
-    </ul>
 
-    {message ? <Message message={message}/>:''}
+        {message ? <Message message={message}/>:''}
     <form onSubmit={onSubmit}>
       <label htmlFor="Post"><b>Enter Status</b></label>
       <input type="text" name="Post" value={post.status}
@@ -70,8 +67,17 @@ const resetForm=()=>{
       <button className="btn btn-lg btn-dark btn-block"
       style={{marginTop:'20px',marginLeft:'40%'}}
 
-      type="submit">Submit</button>
+      type="submit">Post</button>
     </form>
+    <hr/>
+     <h3>All Posts</h3>
+    <ul className='li-group'>
+    { loading?<h4>Loading....</h4> :posts.map(p=>{
+        return <PostItem key={p._id} status={p.status} name={p.firstName + " " +p.lastName}/>
+      })}
+    </ul>
+    <br/>
+
     </div>
   )
 }

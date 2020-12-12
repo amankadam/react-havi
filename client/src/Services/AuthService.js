@@ -22,17 +22,15 @@ export default{
         },
   register:user=>{
     return axios({
-      url:'http://localhost:3001/user/register',
+      url:'/user/register',
       method:"post",
       data:JSON.stringify(user),
       headers:{
         'Content-Type' : 'application/json'
       }
     }).then(res=>res).catch((e)=>{
-      console.log(e);
       return {isAuthenticated:false,user:{firstName:"",lastName:"",email:""}};
 
-      console.log(e);
     });
   },
   logout:()=>{

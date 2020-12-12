@@ -18,7 +18,6 @@ const Register =props=>{
 
 
 const onChange=e=>{
-  console.log(user);
   setUser({...user,[e.target.name]:e.target.value});
 }
 const resetForm=()=>{

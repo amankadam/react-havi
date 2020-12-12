@@ -81,12 +81,12 @@ User.findById({_id:req.user._id}).populate('posts').exec((e,d)=>{
 });
 
 
-userRouter.get('/admin',passport.authenticate('local',{session:false}),(req,res)=>{
-User.find({}).exec((e,d)=>{
+userRouter.get('/admin',passport.authenticate('jwt',{session:false}),(req,res)=>{
+User.find({},function(e,u){;
 
     if(e) res.status(500).json({msg:'Error'});
     else {
-      res.status(200).json({posts:d,isAuthenticated:true});
+      res.status(200).json({users:u,isAuthenticated:true});
     }
 });
 });

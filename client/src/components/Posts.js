@@ -14,7 +14,8 @@ const Post=props=>{
   useEffect(()=>{
     PostService.getPosts().then(data=>{
       setPosts(data.posts);
-    })
+    });
+setloading(false);
   },[]);
 
  const onSubmit=e=>{
@@ -27,20 +28,17 @@ const Post=props=>{
        PostService.getPosts().then(getData=>{
          setPosts(getData.posts);
          setMessage("Successfully Created.");
-         setloading(false);
+
        });
      }else if(message=="UnAuthorized"){
        setMessage("Logged Out. Please Login Again");
        authContext.setUser({email:""});
        authContext.setIsAuthenticated(false);
 
-       setloading(false);
      }else{
        setMessage(message);
 
-       setloading(false);
      }
-
    });
  }
 
@@ -58,11 +56,12 @@ const resetForm=()=>{
     <div className='container'>
      <h3>Your Posts</h3>
     <ul className='li-group'>
-    {  posts.map(p=>{
+    { loading ? <h4>Loading....</h4> :posts.map(p=>{
         return <PostItem key={p._id} status={p.status}/>
       })}
     </ul>
-    <br/>
+
+    {message ? <Message message={message}/>:''}
     <form onSubmit={onSubmit}>
       <label htmlFor="Post"><b>Enter Status</b></label>
       <input type="text" name="Post" value={post.status}
@@ -73,7 +72,6 @@ const resetForm=()=>{
 
       type="submit">Submit</button>
     </form>
-    {message ? <Message message={message}/>:''}
     </div>
   )
 }

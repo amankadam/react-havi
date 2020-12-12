@@ -30,5 +30,18 @@ export default {
    }).catch((e)=>{
        return {message:"UnAuthorized"}
    });
- }
+ 
+},
+getUsers:()=>{
+  return axios.get('/user/admin').then(res=>{
+    if(res.status!==401){
+      console.log(res.data);
+      return res.data;
+    }else{
+      return {message:"UnAuthorized"}
+    }
+  }).catch((e)=>{
+      return {message:"UnAuthorized"}
+  });
+},
 }

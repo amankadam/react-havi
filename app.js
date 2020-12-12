@@ -6,11 +6,9 @@ var cors=require('cors');
 
 const path = require("path")
 
-// app.use(express.static(path.join(__dirname, "client", "public")))
-//
-// // app.get("*", (req, res) => {
-// //     res.sendFile(path.join(__dirname, "client", "public", "index.html"));
-// // });
+app.use(express.static(path.join(__dirname, "client", "public")))
+
+
 
 
 app.use(cors());
@@ -25,6 +23,10 @@ mongoose.connect('mongodb+srv://upi:XSs3K5yXOwb5I2AL@cluster0.odlmg.mongodb.net/
 const port = process.env.PORT || 8080;
 const userRouter=require('./routes/User');
 app.use('/user',userRouter);
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "public", "index.html"));
+});
 app.listen(port,()=>{
   console.log('server started..'+port);
 });

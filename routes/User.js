@@ -14,17 +14,16 @@ const signToken=id=>{
 }
 
 userRouter.post('/register',(req,res)=>{
-  console.log(req.body);
   const {firstName,lastName,gender,password,email,dateOfBirth}=req.body;
   User.findOne({email},(e,user)=>{
-    console.log(e);
+
     if(e) res.status(500).json({msg:'Error'});
     if(user)
     res.status(400).json({msg:'User already Registered.'});
     else {
       const newUser=new User({email,password,firstName,lastName,dateOfBirth,gender});
       newUser.save(e=>{
-        console.log(e);
+
         if(e) res.status(500).json({msg:'Error'});
         else res.status(201).json({msg:'Registered Successfully'});
 
@@ -38,8 +37,6 @@ userRouter.post('/login',passport.authenticate('local',{session:false}),(req,res
     if(req.isAuthenticated()){
     const {_id,email} =req.user;
     const token=signToken(_id);
-    console.log('done');
-    console.log(token);
     res.cookie('access_token',token,{httpOnly:true,sameSite:true});
     res.status(200).json({isAuthenticated:true,user:{email}});
 
@@ -47,7 +44,6 @@ userRouter.post('/login',passport.authenticate('local',{session:false}),(req,res
 });
 userRouter.get('/logout',passport.authenticate('jwt',{session:false}),(req,res)=>{
 
-  console.log('hey');
 res.clearCookie('access_token');
 res.json({user:{firstName:"",lastName:"",email:""},success:true});
 });
@@ -74,10 +70,9 @@ userRouter.get('/authenticated',passport.authenticate('jwt',{session : false}),(
 });
 
 userRouter.get('/posts',passport.authenticate('jwt',{session:false}),(req,res)=>{
-console.log(req.user._id);
+
 User.findById({_id:req.user._id}).populate('posts').exec((e,d)=>{
-  console.log(d);
-  console.log(e);
+
     if(e) res.status(500).json({msg:'Error'});
     else {
       res.status(200).json({posts:d.posts,isAuthenticated:true});
@@ -88,8 +83,7 @@ User.findById({_id:req.user._id}).populate('posts').exec((e,d)=>{
 
 userRouter.get('/admin',passport.authenticate('local',{session:false}),(req,res)=>{
 User.find({}).exec((e,d)=>{
-  console.log(d);
-  console.log(e);
+
     if(e) res.status(500).json({msg:'Error'});
     else {
       res.status(200).json({posts:d,isAuthenticated:true});
